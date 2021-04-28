@@ -2,7 +2,9 @@ DROP PROCEDURE sfc_orden_camtit;
 
 CREATE PROCEDURE sfc_orden_camtit(
 nroClienteNvo	LIKE cliente.numero_cliente,
-nroMensaje    integer)
+nroMensaje    integer,
+sRolOrigen      LIKE rol.rol,
+sAreaOrigen     LIKE rol.area)
 RETURNING smallint as codigo, char(100) as descripcion;
 
 DEFINE retCodigo smallint;
@@ -10,7 +12,6 @@ DEFINE retDescripcion  char(100);
 DEFINE nrows        integer;
 DEFINE codRetorno   integer;
 DEFINE descRetorno  char(100);
-DEFINE sAreaRol     char(20);
 
 DEFINE sql_err              INTEGER;
 DEFINE isam_err             INTEGER;
@@ -19,10 +20,6 @@ DEFINE error_info           CHAR(100);
     ON EXCEPTION SET sql_err, isam_err, error_info
         RETURN 1, 'sfcMoverCliente. sqlErr '  || to_char(sql_err) || ' isamErr ' || to_char(isam_err) || ' ' || error_info;
     END EXCEPTION;
-
-    SELECT area INTO sAreaRol
-    FROM rol
-    WHERE rol = 'SALESFORCE';
 
     INSERT INTO orden (
       tipo_orden,
@@ -44,8 +41,8 @@ DEFINE error_info           CHAR(100);
       nroClienteNvo,
       nroMensaje,
       1,
-      sAreaRol,
-      'SALESFORCE',
+      sAreaOrigen,
+      sRolOrigen,
       CURRENT,
       'RQ',
       'SALESFORCE',
