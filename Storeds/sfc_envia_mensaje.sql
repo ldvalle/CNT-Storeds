@@ -53,28 +53,46 @@ DEFINE error_info           CHAR(100);
 	END IF;
     
     -- Armo TEXTON
-    LET texton = trim(sRolSalida) || 'þþ';
-    LET texton = texton || 'OCP' || sucurPadre || 'þþ';
-    LET texton = texton || to_char(nro_cliente) || 'þ' || cli_dv_numero_cliente || 'þ';
-    LET texton = texton || trim(desc_motivo) || 'þ';
-    LET texton = texton || trim(cli_nombre) || 'þ';
-    LET texton = texton || trim(cli_nom_calle) || 'þ';
-    LET texton = texton || trim(cli_nom_comuna) || 'þ';
-    LET texton = texton || trim(sRolOrigen) || ' (' || trim(sAreaOrigen) || ')' || 'þ';
-    LET texton = texton || procedimiento || 'þ';
-    LET texton = texton || trim(cli_desc_empalme) || 'þ';
-    LET texton = texton || trim(cli_nro_subestacion) || 'þ';
-    LET texton = texton || trim(cli_potencia_contrato) || 'þ';
-    LET texton = texton || trim(cli_potencia_inst_fp) || 'þþþ';
-    LET texton = texton || trim(cli_nom_provincia) || 'þþþþþ-------------\n';
-    LET texton = texton || to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || sRolOrigen || ' - ' || '10.240.20.18/\n';
+    IF procedimiento = 'RETCLI' THEN
+      LET texton = trim(sRolSalida) || 'þþ';
+      LET texton = texton || 'OCP' || sucurPadre || 'þþ';
+      LET texton = texton || to_char(nro_cliente) || 'þ' || cli_dv_numero_cliente || 'þ';
+      LET texton = texton || trim(desc_motivo) || 'þ';
+      LET texton = texton || trim(cli_nombre) || 'þ';
+      LET texton = texton || trim(cli_nom_calle) || 'þ';
+      LET texton = texton || trim(cli_nom_comuna) || 'þ';
+      LET texton = texton || trim(sRolOrigen) || ' (' || trim(sAreaOrigen) || ')' || 'þ';
+      LET texton = texton || procedimiento || 'þ';
+      LET texton = texton || trim(cli_desc_empalme) || 'þ';
+      LET texton = texton || trim(cli_nro_subestacion) || 'þ';
+      LET texton = texton || trim(cli_potencia_contrato) || 'þ';
+      LET texton = texton || trim(cli_potencia_inst_fp) || 'þþþ';
+      LET texton = texton || trim(cli_nom_provincia) || 'þþþþþ-------------\n';
+      LET texton = texton || to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || sRolOrigen || ' - ' || '10.240.20.18/\n';
     
+    ELIF procedimiento = 'MANSER' THEN
+      LET texton = trim(sRolSalida) || 'þþþþ';
+      LET texton = texton || to_char(nro_cliente) || 'þ' || cli_dv_numero_cliente || 'þ';
+      LET texton = texton || trim(desc_motivo) || 'þ';
+      LET texton = texton || trim(cli_nombre) || 'þ';
+      LET texton = texton || trim(cli_nom_calle) || 'þ';
+      LET texton = texton || trim(cli_nom_comuna) || 'þ';
+      LET texton = texton || trim(sRolOrigen) || ' (' || trim(sAreaOrigen) || ')' || 'þ';      
+      LET texton = texton || procedimiento || 'þ';
+      LET texton = texton || trim(cli_desc_empalme) || 'þ';
+      LET texton = texton || trim(cli_nro_subestacion) || 'þ';
+      LET texton = texton || trim(cli_potencia_contrato) || 'þ';
+      LET texton = texton || trim(cli_potencia_inst_fp) || 'þþþ';
+      LET texton = texton || trim(cli_nom_provincia) || 'þþþþþ-------------\n';
+      LET texton = texton || to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || sRolOrigen || ' - ' || '10.240.20.18/\n';
+    
+    END IF;
+        
     LET sReferencia = '(' || procedimiento || ') Cliente: ' || lpad(nro_cliente, 8, '0') || '-' || cli_dv_numero_cliente; 
     
     -- Envio el mensaje
-    EXECUTE PROCEDURE xpro_enviar (msg_xnear, trim(procedimiento), 'INICIO', 0, 4, 'N', sReferncia, trim(sRolOrigen),
+    EXECUTE PROCEDURE xpro_enviar (msg_xnear, trim(procedimiento), 'INICIO', 0, 4, 'N', sReferencia, trim(sRolOrigen),
         trim(sRolOrigen), trim(sRolSalida), 1, 1, 1, texton);
-
 
     RETURN 0, 'OK';
 END PROCEDURE;

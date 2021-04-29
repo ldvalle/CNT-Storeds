@@ -3,7 +3,7 @@ DROP PROCEDURE sfc_orden;
 CREATE PROCEDURE sfc_orden( 
 nro_cliente     like cliente.numero_cliente, 
 msg_xnear       like mensaje.mensaje,
-sNroOrden       char(16);  
+sNroOrden       char(16),  
 motivo          like tabla.codigo,
 idTrx           char(30),
 sRolOrigen      like rol.rol,
@@ -15,6 +15,8 @@ DEFINE retCodigo    smallint;
 DEFINE retDesc      char(50);
 DEFINE centro_op    char(4);
 DEFINE tipoOrden    char(3);
+DEFINE sTema        char(4);
+DEFINE sTrabajo     char(6);
 
 DEFINE nrows    int;
 DEFINE sql_err              INTEGER;
@@ -29,6 +31,10 @@ DEFINE error_info           CHAR(100);
         LET tipoOrden = 'RET';
         LET sTema = motivo;
         LET sTrabajo = ' ';
+    ELIF procedimiento = 'MANSER' THEN
+        LET tipoOrden = 'MAN';
+        LET sTema = substr(motivo, 1, 3);
+        LET sTrabajo = substr(motivo, 4, 3);
     END IF;
        
     SELECT cli_sucursal INTO centro_op FROM sfc_clitecmed_data WHERE trx_proced = idTrx;

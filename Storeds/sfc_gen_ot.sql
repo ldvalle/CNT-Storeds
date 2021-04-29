@@ -38,7 +38,6 @@ DEFINE cli_modelo_medidor       like sfc_clitecmed_data.modelo_medidor;
 DEFINE cli_obs_dir              like sfc_clitecmed_data.obs_dir;
 DEFINE cli_info_adic_lectura    like sfc_clitecmed_data.info_adic_lectura;
 DEFINE cli_tipo_cliente         like sfc_clitecmed_data.tipo_cliente; 
-DEFINE cli_acometida            like sfc_clitecmed_data.acometida;
 DEFINE cli_nom_entre            like sfc_clitecmed_data.nom_entre;
 DEFINE cli_nom_entre1           like sfc_clitecmed_data.nom_entre1;
 DEFINE cli_telefono             like sfc_clitecmed_data.telefono; 
@@ -49,7 +48,6 @@ DEFINE cli_piso_dir             like sfc_clitecmed_data.piso_dir;
 DEFINE cli_depto_dir            like sfc_clitecmed_data.depto_dir;
 DEFINE cli_nom_comuna           like sfc_clitecmed_data.nom_comuna;
 DEFINE cli_cod_postal           like sfc_clitecmed_data.cod_postal;
- 
 
 DEFINE miTrabajo        char(4);
 DEFINE miFechaVto       date;
@@ -57,7 +55,8 @@ DEFINE ObsSgn           char(100);
 DEFINE cod_bar_mod      char(3);
 DEFINE iItem            smallint;
 DEFINE sCodBarra        char(12);
-
+DEFINE sRutaLectura     char(20);
+DEFINE omsObsError      char(13);
 
 DEFINE pre_serie        like sellos.serie_insta; 
 DEFINE pre_numero       like sellos.numero_insta; 
@@ -98,12 +97,19 @@ DEFINE error_info           CHAR(100);
     FROM sfc_clitecmed_data
     WHERE trx_proced = idTrx;
     
-    IF cli_clave_montri = 'M' THEN
-        LET miTrabajo = 'SR01';
-    ELSE
-        LET miTrabajo = 'SR02';
-    END IF;
-     
+    IF procedimiento = 'RETCLI' THEN
+      IF cli_clave_montri = 'M' THEN
+          LET miTrabajo = 'SR01';
+      ELSE
+          LET miTrabajo = 'SR02';
+      END IF;
+    ELIF procedimiento = 'MANSER' THEN
+      IF cli_clave_montri = 'M' THEN
+          LET miTrabajo = 'SC01';
+      ELSE
+          LET miTrabajo = 'SC02';
+      END IF;
+    END IF;     
     LET miFechaVto = TODAY + 10;
        
     -- La barra del medidor
@@ -175,7 +181,7 @@ DEFINE error_info           CHAR(100);
     WHERE ot_mensaje_xnear = msg_xnear
     AND ot_fecha_inicio = (SELECT max(ot_fecha_inicio) FROM ot_mac 
     WHERE ot_mensaje_xnear = msg_xnear
-    AND ot_estado = 'C' )
+    AND ot_estado = 'C' );
         
     -- Grabo OT_HISEVEN
     INSERT INTO ot_hiseven 
@@ -205,7 +211,7 @@ DEFINE error_info           CHAR(100);
       AND numero_medidor = cli_numero_medidor
       AND marca_medidor  = cli_marca_medidor
       AND estado_insta = '6'
-      ORDER BY fecha_movimiento DESC; 
+      ORDER BY fecha_movimiento DESC 
     
       LET iItem=iItem+1;
       
@@ -235,12 +241,21 @@ DEFINE error_info           CHAR(100);
     IF envia_sap = 'S' THEN
         -- Grabo OT_MAC_SAP
         IF procedimiento = 'RETCLI' THEN
-          LET sNroOt = 'SR' || lpad( iNroOrden, 10, '0'); 
+          LET sNroOt = 'SR' || lpad( iNroOT, 10, '0'); 
           
           LET ObsSgn = sRolSalida || ' - '  || to_char(nro_cliente) || ' - ' || trim(cli_nombre) || current || ' - ' || 
                   trim(sRolOrigen) || ' - 10.240.0.0';    
 
           LET omsObsError = 'Retcli sin OT';
+        
+        ELIF procedimiento = 'MANSER' THEN
+          LET sNroOt = 'SC' || lpad( iNroOT, 10, '0'); 
+          
+          LET ObsSgn = sRolSalida || ' - '  || to_char(nro_cliente) || ' - ' || trim(cli_nombre) || current || ' - ' || 
+                  trim(sRolOrigen) || ' - 10.240.0.0';    
+
+          LET omsObsError = 'Manser sin OT';
+        
         END IF;
         
         INSERT INTO ot_mac_sap (
@@ -355,7 +370,6 @@ DEFINE error_info           CHAR(100);
         omp_serie_pre3_ret,
         omp_ubic_pre3_ret,
         omp_tipo_pre3_ret,
-  
         omp_estado,
         omp_status,
         omp_hora_status,
