@@ -2,7 +2,7 @@ DROP PROCEDURE sfc_orden;
 
 CREATE PROCEDURE sfc_orden( 
 nro_cliente     like cliente.numero_cliente, 
-msg_xnear       like mensaje.mensaje,
+msg_xnear       integer,
 sNroOrden       char(16),  
 motivo          like tabla.codigo,
 idTrx           char(30),
@@ -37,7 +37,7 @@ DEFINE error_info           CHAR(100);
         LET sTrabajo = substr(motivo, 4, 3);
     END IF;
        
-    SELECT cli_sucursal INTO centro_op FROM sfc_clitecmed_data WHERE trx_proced = idTrx;
+    SELECT sucursal INTO centro_op FROM sfc_clitecmed_data WHERE trx_proced = idTrx;
     
     INSERT INTO orden (
       tipo_orden,

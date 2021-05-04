@@ -2,7 +2,7 @@ DROP PROCEDURE sfc_envia_mensaje;
 
 CREATE PROCEDURE sfc_envia_mensaje( 
 nro_cliente     like cliente.numero_cliente, 
-msg_xnear       like mensaje.mensaje,
+msg_xnear       integer,
 motivo          like tabla.codigo,
 desc_motivo     char(50),
 envia_sap       char(1),
@@ -28,21 +28,23 @@ DEFINE cli_potencia_contrato    like sfc_clitecmed_data.potencia_contrato;
 DEFINE cli_potencia_inst_fp     like sfc_clitecmed_data.potencia_inst_fp;
 DEFINE cli_nom_provincia        like sfc_clitecmed_data.nom_provincia;
 
-DEFINE texton       char(250);
+DEFINE texton       char(10240);
 DEFINE sReferencia  char(100);
 
 DEFINE nrows                integer;
 DEFINE sql_err              INTEGER;
 DEFINE isam_err             INTEGER;
 DEFINE error_info           CHAR(100);
+DEFINE sXpro                char(50);
+DEFINE sC                   char(1);
 
     ON EXCEPTION SET sql_err, isam_err, error_info
         RETURN 1, 'sfc_envia_mensaje. sqlErr '  || to_char(sql_err) || ' isamErr ' || to_char(isam_err) || ' ' || error_info;
     END EXCEPTION;
 
     -- Recupero datos del cliente
-    SELECT dv_numero_cliente, nombre, nom_calle, nom_comuna, desc_empalme, nro_subestacion,
-        potencia_contrato, potencia_inst_fp, nom_provincia
+    SELECT dv_numero_cliente, nombre, nom_calle, nom_comuna, nvl(desc_empalme, ' '), nvl(nro_subestacion, ' '),
+        nvl(potencia_contrato, 0), nvl(potencia_inst_fp, 0), nom_provincia
     INTO cli_dv_numero_cliente, cli_nombre, cli_nom_calle, cli_nom_comuna, cli_desc_empalme,
         cli_nro_subestacion, cli_potencia_contrato, cli_potencia_inst_fp, cli_nom_provincia
     FROM sfc_clitecmed_data WHERE trx_proced = idTrx;
@@ -52,47 +54,52 @@ DEFINE error_info           CHAR(100);
 		RETURN 1, 'sfc_envia_mensaje. Perdi data del cliente.';
 	END IF;
     
+    -- levanto el caracter 'þ'
+    SELECT caracter INTO sC FROM tabla_ascii
+    WHERE cod_dec = 254;
+
+     
     -- Armo TEXTON
-    IF procedimiento = 'RETCLI' THEN
-      LET texton = trim(sRolSalida) || 'þþ';
-      LET texton = texton || 'OCP' || sucurPadre || 'þþ';
-      LET texton = texton || to_char(nro_cliente) || 'þ' || cli_dv_numero_cliente || 'þ';
-      LET texton = texton || trim(desc_motivo) || 'þ';
-      LET texton = texton || trim(cli_nombre) || 'þ';
-      LET texton = texton || trim(cli_nom_calle) || 'þ';
-      LET texton = texton || trim(cli_nom_comuna) || 'þ';
-      LET texton = texton || trim(sRolOrigen) || ' (' || trim(sAreaOrigen) || ')' || 'þ';
-      LET texton = texton || procedimiento || 'þ';
-      LET texton = texton || trim(cli_desc_empalme) || 'þ';
-      LET texton = texton || trim(cli_nro_subestacion) || 'þ';
-      LET texton = texton || trim(cli_potencia_contrato) || 'þ';
-      LET texton = texton || trim(cli_potencia_inst_fp) || 'þþþ';
-      LET texton = texton || trim(cli_nom_provincia) || 'þþþþþ-------------\n';
-      LET texton = texton || to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || sRolOrigen || ' - ' || '10.240.20.18/\n';
-    
+    IF trim(procedimiento) = 'RETCLI' THEN
+      LET texton = trim(sRolSalida) || sC || sC ||
+       'OCP' || sucurPadre || sC || sC ||
+       to_char(nro_cliente) || sC || cli_dv_numero_cliente || sC ||
+       trim(desc_motivo) || sC ||
+       trim(cli_nombre) || sC ||
+       trim(cli_nom_calle) || sC ||
+       trim(cli_nom_comuna) || sC ||
+       trim(sRolOrigen) || ' (' || trim(sAreaOrigen) || ')' || sC ||
+       procedimiento || sC ||
+       trim(cli_desc_empalme) || sC ||
+       trim(cli_nro_subestacion) || sC ||
+       to_char(round(cli_potencia_contrato,2)) || sC ||
+       to_char(cli_potencia_inst_fp) || sC || sC || sC ||
+       trim(cli_nom_provincia) || sC || sC || sC || sC || sC || '-------------\n' ||
+       to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || trim(sRolOrigen) || ' - ' || '10.240.20.18/\n';
+  
     ELIF procedimiento = 'MANSER' THEN
-      LET texton = trim(sRolSalida) || 'þþþþ';
-      LET texton = texton || to_char(nro_cliente) || 'þ' || cli_dv_numero_cliente || 'þ';
-      LET texton = texton || trim(desc_motivo) || 'þ';
-      LET texton = texton || trim(cli_nombre) || 'þ';
-      LET texton = texton || trim(cli_nom_calle) || 'þ';
-      LET texton = texton || trim(cli_nom_comuna) || 'þ';
-      LET texton = texton || trim(sRolOrigen) || ' (' || trim(sAreaOrigen) || ')' || 'þ';      
-      LET texton = texton || procedimiento || 'þ';
-      LET texton = texton || trim(cli_desc_empalme) || 'þ';
-      LET texton = texton || trim(cli_nro_subestacion) || 'þ';
-      LET texton = texton || trim(cli_potencia_contrato) || 'þ';
-      LET texton = texton || trim(cli_potencia_inst_fp) || 'þþþ';
-      LET texton = texton || trim(cli_nom_provincia) || 'þþþþþ-------------\n';
-      LET texton = texton || to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || sRolOrigen || ' - ' || '10.240.20.18/\n';
+      LET texton = trim(sRolSalida) || sC || sC || sC || sC ||
+        to_char(nro_cliente) || sC || cli_dv_numero_cliente || sC ||
+        trim(desc_motivo) || sC ||
+        trim(cli_nombre) || sC ||
+        trim(cli_nom_calle) || sC ||
+        trim(cli_nom_comuna) || sC ||
+        trim(sRolOrigen) || ' (' || trim(sAreaOrigen) || ')' || sC ||      
+        procedimiento || sC ||
+        trim(cli_desc_empalme) || sC ||
+        trim(cli_nro_subestacion) || sC ||
+        to_char(round(cli_potencia_contrato,2)) || sC ||
+        to_char(cli_potencia_inst_fp) || sC || sC || sC ||
+        trim(cli_nom_provincia) || sC || sC || sC || sC || sC || '-------------\n' ||
+        to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || trim(sRolOrigen) || ' - ' || '10.240.20.18/\n';
     
     END IF;
         
     LET sReferencia = '(' || procedimiento || ') Cliente: ' || lpad(nro_cliente, 8, '0') || '-' || cli_dv_numero_cliente; 
     
     -- Envio el mensaje
-    EXECUTE PROCEDURE xpro_enviar (msg_xnear, trim(procedimiento), 'INICIO', 0, 4, 'N', sReferencia, trim(sRolOrigen),
-        trim(sRolOrigen), trim(sRolSalida), 1, 1, 1, texton);
+    EXECUTE PROCEDURE xpro_enviar(msg_xnear, trim(procedimiento), 'INICIO', 0, 4, 'N', sReferencia, trim(sRolOrigen), trim(sRolOrigen), trim(sRolSalida), 1, 1, 1, texton)
+        INTO sXpro;
 
     RETURN 0, 'OK';
 END PROCEDURE;

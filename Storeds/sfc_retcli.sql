@@ -3,14 +3,14 @@ DROP PROCEDURE sfc_retcli;
 CREATE PROCEDURE sfc_retcli(
     cod_motivo      like tabla.codigo,
     nro_cliente     like cliente.numero_cliente,
-    msg_xnear       like mensaje.mensaje,
+    msg_xnear       integer,
     sNroOrden       char(16)
 )
 RETURNING smallint as codRetorno, char(50) as descRetorno, char(12) as orden_ot;
 
 DEFINE retCodigo smallint;
 DEFINE retDesc   char(50);
-DEFINE ordenOt      char(12);
+DEFINE RecuOrdenOt  char(12);
 
 DEFINE mc_estado_cliente    like cliente.estado_cliente;
 DEFINE mc_sucursal          like cliente.sucursal;
@@ -34,8 +34,11 @@ DEFINE error_info           CHAR(100);
     END EXCEPTION;
 
     SET LOCK MODE TO WAIT 10;
+
+    LET RecuOrdenOt=0;
     
     -- Validamos cliente
+    
     SELECT estado_cliente, sucursal INTO mc_estado_cliente, mc_sucursal 
     FROM cliente WHERE numero_cliente = nro_cliente;
     
@@ -44,7 +47,8 @@ DEFINE error_info           CHAR(100);
 		RETURN 1, 'Cliente no existe.', null;
 	END IF;
 
-    -- validamos el motivo    
+    -- validamos el motivo
+        
     EXECUTE PROCEDURE sfc_tabmotivos(cod_motivo, 'OTMORE', mc_estado_cliente)
         INTO auxCod, auxDesc, enviaSAP;
         
@@ -53,6 +57,7 @@ DEFINE error_info           CHAR(100);
     END IF;
 
     -- Sucur Padre SAP
+    
     SELECT suc_padre INTO sucurPadreSap FROM ot_sucursal
     WHERE suc_hijo = mc_sucursal;
 
@@ -62,6 +67,7 @@ DEFINE error_info           CHAR(100);
 	END IF;
     
     -- Origen
+    
     SELECT s.rol, r.area  INTO sRolOrigen, sAreaOrigen
     FROM sucur_centro_op o, sfc_roles s, rol r
     WHERE o.cod_centro_op = mc_sucursal 
@@ -75,6 +81,7 @@ DEFINE error_info           CHAR(100);
 	END IF;
     
     -- Destino
+    
 	SELECT otx_carpeta INTO sCarpetaSalida
 	FROM ot_xpro_accion
 	WHERE otx_proced = 'RETCLI'
@@ -94,6 +101,7 @@ DEFINE error_info           CHAR(100);
 	END IF;
     
     -- Obtenemos Data Gral del cliente
+    
     EXECUTE PROCEDURE sfc_data_climed( nro_cliente, 'RETCLI')
         INTO retCodigo, retDesc, idTrx;
 
@@ -102,9 +110,11 @@ DEFINE error_info           CHAR(100);
     END IF;
 
     -- Grabar Retcli
+    
     INSERT INTO retcli (numero_cliente, codigo) VALUES (nro_cliente, 'R');
     
     -- Grabar Orden
+    
     EXECUTE PROCEDURE sfc_orden(nro_cliente, msg_xnear, sNroOrden, cod_motivo, idTrx, sRolOrigen, sAreaOrigen, 'RETCLI')
         INTO retCodigo, retDesc;
 
@@ -113,14 +123,16 @@ DEFINE error_info           CHAR(100);
     END IF;
 
     -- Cargar Tablas de OT
+    
     EXECUTE PROCEDURE sfc_gen_ot(nro_cliente, msg_xnear, cod_motivo, enviaSAP, idTrx, sRolOrigen, sAreaOrigen, sCarpetaSalida, sAreaSalida, sucurPadreSAP, 'RETCLI')
-        INTO retCodigo, retDesc, ordenOt;
+        INTO retCodigo, retDesc, RecuOrdenOt;
         
     IF retCodigo != 0 THEN
         RETURN retCodigo, retDesc, null;
     END IF;
     
     -- Cargar y enviar Mensaje
+    
     EXECUTE PROCEDURE sfc_envia_mensaje(nro_cliente, msg_xnear, cod_motivo, auxDesc, enviaSAP, idTrx, sRolOrigen, sAreaOrigen, sCarpetaSalida, sAreaSalida, sucurPadreSAP, 'RETCLI')
         INTO retCodigo, retDesc;
 
@@ -129,9 +141,10 @@ DEFINE error_info           CHAR(100);
     END IF;
 
     -- Borramos data cliente
+    
     DELETE sfc_clitecmed_data WHERE trx_proced = idTrx;
 
-    RETURN 0, 'OK', ordenOt;
+    RETURN 0, 'OK', RecuOrdenOt;
 
 END PROCEDURE;
 

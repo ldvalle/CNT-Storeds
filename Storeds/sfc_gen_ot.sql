@@ -2,7 +2,7 @@ DROP PROCEDURE sfc_gen_ot;
 
 CREATE PROCEDURE sfc_gen_ot( 
 nro_cliente     like cliente.numero_cliente, 
-msg_xnear       like mensaje.mensaje,
+msg_xnear       integer,
 motivo          like tabla.codigo,
 envia_sap       char(1),
 idTrx           char(30),
@@ -20,7 +20,6 @@ DEFINE iNroOT       integer;
 DEFINE sNroOt       char(12);
 DEFINE centro_op    char(4);
 DEFINE tipoOrden    char(3);
-
 DEFINE cli_nombre               like sfc_clitecmed_data.nombre;
 DEFINE cli_sucursal             like sfc_clitecmed_data.sucursal; 
 DEFINE cli_sector               like sfc_clitecmed_data.sector;
@@ -48,7 +47,6 @@ DEFINE cli_piso_dir             like sfc_clitecmed_data.piso_dir;
 DEFINE cli_depto_dir            like sfc_clitecmed_data.depto_dir;
 DEFINE cli_nom_comuna           like sfc_clitecmed_data.nom_comuna;
 DEFINE cli_cod_postal           like sfc_clitecmed_data.cod_postal;
-
 DEFINE miTrabajo        char(4);
 DEFINE miFechaVto       date;
 DEFINE ObsSgn           char(100);
@@ -74,7 +72,7 @@ DEFINE pre_numero3      like sellos.numero_insta;
 DEFINE pre_ubic3        like sellos.codigo_ubicacion; 
 DEFINE pre_tipo3        char(1);
 
-DEFINE nrows    int;
+DEFINE nrows                INTEGER;
 DEFINE sql_err              INTEGER;
 DEFINE isam_err             INTEGER;
 DEFINE error_info           CHAR(100);
@@ -82,6 +80,8 @@ DEFINE error_info           CHAR(100);
     ON EXCEPTION SET sql_err, isam_err, error_info
         RETURN 1, 'sfc_gen_ot. sqlErr '  || to_char(sql_err) || ' isamErr ' || to_char(isam_err) || ' ' || error_info, null;
     END EXCEPTION;
+
+    LET sNroOt='000000000000';
 
     -- Obtengo datos del cliente
     SELECT nombre, sucursal, sector, zona, correlativo_ruta, potencia_contrato, tipo_empalme,
@@ -201,7 +201,18 @@ DEFINE error_info           CHAR(100);
         CURRENT );
     
     -- Cargo Precintos
+    
     LET iItem=0;
+    LET pre_serie1 = ''; 
+    LET pre_numero1 = 0; 
+    LET pre_ubic1 = ''; 
+    LET pre_serie2 = ''; 
+    LET pre_numero2 = 0; 
+    LET pre_ubic2 = ''; 
+    LET pre_serie3 = ''; 
+    LET pre_numero3 = 0; 
+    LET pre_ubic3 = '';
+    LET pre_tipo3 = ''; 
     
     FOREACH
       SELECT FIRST 2 serie_insta, numero_insta, codigo_ubicacion, fecha_movimiento
@@ -242,21 +253,13 @@ DEFINE error_info           CHAR(100);
         -- Grabo OT_MAC_SAP
         IF procedimiento = 'RETCLI' THEN
           LET sNroOt = 'SR' || lpad( iNroOT, 10, '0'); 
-          
-          LET ObsSgn = sRolSalida || ' - '  || to_char(nro_cliente) || ' - ' || trim(cli_nombre) || current || ' - ' || 
-                  trim(sRolOrigen) || ' - 10.240.0.0';    
-
           LET omsObsError = 'Retcli sin OT';
-        
         ELIF procedimiento = 'MANSER' THEN
           LET sNroOt = 'SC' || lpad( iNroOT, 10, '0'); 
-          
-          LET ObsSgn = sRolSalida || ' - '  || to_char(nro_cliente) || ' - ' || trim(cli_nombre) || current || ' - ' || 
-                  trim(sRolOrigen) || ' - 10.240.0.0';    
-
           LET omsObsError = 'Manser sin OT';
-        
         END IF;
+
+        LET ObsSgn = trim(sRolSalida) || ' - '  || to_char(nro_cliente) || ' - ' || trim(cli_nombre) || current || ' - ' || trim(sRolOrigen) || ' - 10.240.0.0';    
         
         INSERT INTO ot_mac_sap (
           oms_tipo_ifaz,

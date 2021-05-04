@@ -29,7 +29,7 @@ DEFINE cli_correlativo_ruta like cliente.correlativo_ruta;
 DEFINE cli_tipo_empalme like cliente.tipo_empalme;
 DEFINE cli_desc_empalme     like tabla.descripcion;
 DEFINE cli_potencia_contrato like cliente.potencia_contrato;
-DEFINE cli_potencia_inst_fp like cliente.potencia_int;
+DEFINE cli_potencia_inst_fp like cliente.potencia_inst_fp;
 DEFINE cli_obs_dir like cliente.obs_dir;
 DEFINE cli_info_adic_lectura like cliente.info_adic_lectura;
 DEFINE cli_tipo_cliente  like cliente.tipo_cliente;
@@ -41,10 +41,10 @@ DEFINE tec_acometida    like tecni.acometida;
 DEFINE tec_tipo_conexion    like tecni.tipo_conexion;
 DEFINE tec_car_med_princ    like tecni.car_med_princ;
 -- Data Medidor
-DEFINE med_numero_medidor   like medid.med_numero_medidor; 
-DEFINE med_marca_medidor    like medid.med_marca_medidor;
-DEFINE med_modelo_medidor   like medid.med_modelo_medidor;
-DEFINE med_clave_montri     like medid.med_clave_montri;
+DEFINE med_numero_medidor   like medid.numero_medidor; 
+DEFINE med_marca_medidor    like medid.marca_medidor;
+DEFINE med_modelo_medidor   like medid.modelo_medidor;
+DEFINE med_clave_montri     like medid.clave_montri;
 
 DEFINE nrows    int;
 DEFINE sql_err              INTEGER;

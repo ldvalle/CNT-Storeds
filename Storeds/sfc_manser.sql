@@ -3,7 +3,7 @@ DROP PROCEDURE sfc_manser;
 CREATE PROCEDURE sfc_manser(
     cod_motivo      like tabla.codigo,
     nro_cliente     like cliente.numero_cliente,
-    msg_xnear       like mensaje.mensaje,
+    msg_xnear       integer,
     sNroOrden       char(16)
 )
 RETURNING smallint as codRetorno, char(50) as descRetorno, char(12) as orden_ot;
