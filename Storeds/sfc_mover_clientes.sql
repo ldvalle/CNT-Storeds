@@ -54,6 +54,7 @@ DEFINE error_info           CHAR(100);
 
     DELETE FROM cliente_temp
     WHERE numero_cliente = nroClienteNvo;
+
     
     -- Damos de baja el viejo
     UPDATE cliente SET
@@ -81,7 +82,7 @@ DEFINE error_info           CHAR(100);
         ss_nombre, ss_tip_doc, ss_nro_doc, ss_origen_doc, ss_tarifa, ss_cod_postal, ss_obs_dir, ss_tipo_iva,
         ss_tipo_cliente, ss_tipo_venc, ss_nro_cuit, ss_ciiu, ss_cod_propiedad, ss_tipo_sum, ss_pot_cont_hp
     FROM solicitud s
-    WHERE s.nro_solicitud = nro_solicitud;
+    WHERE s.nro_solicitud = nroSolicitud;
 
     UPDATE cliente SET
       dv_numero_cliente = dv_nvo_cliente,
@@ -146,8 +147,8 @@ DEFINE error_info           CHAR(100);
       cuenta_conver = null,
       tiene_caduc_manual = 'N'
     WHERE numero_cliente = nroClienteNvo;
-    
-    RETURN retCodigo, retDescripcion;
+
+    RETURN 0, 'OK';
 
 END PROCEDURE;
 

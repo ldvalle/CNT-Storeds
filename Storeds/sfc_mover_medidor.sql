@@ -50,7 +50,6 @@ DEFINE auxMedInterno        char(1);
 
     ON EXCEPTION SET sql_err, isam_err, error_info
         RETURN 1, 'sfcMoverMedidor. sqlErr '  || to_char(sql_err) || ' isamErr ' || to_char(isam_err) || ' ' || error_info;
-        --RAISE EXCEPTION sql_err, isam_err, error_info;
     END EXCEPTION;
 
     SELECT fecha_ultima_lect INTO CLIENTE_fecha_ultima_lect
@@ -154,11 +153,11 @@ DEFINE auxMedInterno        char(1);
         valor5 = ULTMED_fecha1,
         valor6 = ULTMED_fecha2,
         fecha1 = TODAY, 
-        fecha2 = ULTMED_fecha4,
-        fecha3 = ULTMED_fecha5,
-        fecha4 = ULTMED_fecha6,
-        fecha5 = ULTMED_anio_fabrica,
-        fecha6 = ULTMED_marca_censo
+        fecha2 = ULTMED_fecha1,
+        fecha3 = ULTMED_fecha2,
+        fecha4 = ULTMED_fecha3,
+        fecha5 = ULTMED_fecha4,
+        fecha6 = ULTMED_fecha5
         WHERE numero_medidor = MEDID_numero_medidor
         AND marca_medidor = MEDID_marca_medidor
         AND modelo_medidor = MEDID_modelo_medidor;
@@ -287,7 +286,7 @@ DEFINE auxMedInterno        char(1);
         RETURN retCodigo, retDescripcion;
     END IF;        
     
-    RETURN retCodigo, retDescripcion;
+    RETURN 0, 'OK';
 END PROCEDURE;
 
 

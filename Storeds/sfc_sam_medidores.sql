@@ -16,7 +16,7 @@ DEFINE MED_med_estado       LIKE medidor.med_estado;
 DEFINE MED_med_situacion    LIKE medidor.med_situacion;
 DEFINE MED_med_precinto1    LIKE medidor.med_precinto1;
 DEFINE MED_med_precinto2    LIKE medidor.med_precinto2;
-DEFINE MEDCLI_fecha_alta    LIKE mecli.fecha_alta;
+DEFINE MEDCLI_fecha_alta    LIKE medcli.fecha_alta;
 
 DEFINE nrows                integer;
 DEFINE sql_err              INTEGER;
