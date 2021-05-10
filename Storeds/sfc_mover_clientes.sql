@@ -65,7 +65,7 @@ DEFINE error_info           CHAR(100);
     motret = '000006' 
     where numero_cliente = nroClienteVjo;
     
-    EXECUTE PROCEDURE salt_graba_modif(nroClienteVjo, '58', 'SALESFORCE', 'INCORPORACION', 'Activo', 'Baja Cliente')
+    EXECUTE PROCEDURE sfc_graba_modif(nroClienteVjo, '58', 'SALESFORCE', 'SOL', 'A', 'INCORPORACION', 'Activo', 'Baja Cliente')
 		INTO codRetorno, descRetorno;
     
     IF codRetorno != 0 THEN
@@ -117,7 +117,7 @@ DEFINE error_info           CHAR(100);
       fecha_a_corte = 219206,
       fecha_vig_conv = null,
       fecha_clave_tarifa = fecha_ultima_lect,
-      estado_cliente = 2,
+      estado_cliente = 0,
       categoria = '00',
       estado_cobrabilida = '1',
       tiene_convenio = 'N',
@@ -148,6 +148,88 @@ DEFINE error_info           CHAR(100);
       tiene_caduc_manual = 'N'
     WHERE numero_cliente = nroClienteNvo;
 
+    -- TECNi
+    INSERT INTO tecni ( 
+      numero_cliente, 
+      codigo_voltaje, 
+      car_med_princ, 
+      tipo_tranformador, 
+      ult_tipo_contrato, 
+      nro_ult_contrato, 
+      fecha_ult_contrato, 
+      tipo_conexion, 
+      nro_subestacion, 
+      acometida, 
+      nro_orden_conexion, 
+      fecha_conexion, 
+      caja_empalme, 
+      conductor_empalme, 
+      tec_subestacion, 
+      tec_nom_subest, 
+      tec_alimentador, 
+      tec_centro_trans, 
+      tec_fase, 
+      tec_acometida, 
+      tec_tipo_instala, 
+      tec_nom_calle, 
+      tec_nro_dir, 
+      tec_piso_dir, 
+      tec_depto_dir, 
+      tec_entre_calle1, 
+      tec_entre_calle2, 
+      tec_manzana, 
+      tec_barrio, 
+      tec_localidad, 
+      tec_partido, 
+      tec_sucursal, 
+      tec_cod_calle, 
+      tec_cod_entre, 
+      tec_cod_ycalle, 
+      tec_cod_suc, 
+      tec_cod_part, 
+      tec_cod_local) 
+    SELECT 
+      nroClienteNvo,
+      t.codigo_voltaje, 
+      t.car_med_princ, 
+      t.tipo_tranformador, 
+      t.ult_tipo_contrato, 
+      t.nro_ult_contrato, 
+      t.fecha_ult_contrato, 
+      t.tipo_conexion, 
+      t.nro_subestacion, 
+      t.acometida, 
+      t.nro_orden_conexion, 
+      t.fecha_conexion, 
+      t.caja_empalme, 
+      t.conductor_empalme, 
+      t.tec_subestacion, 
+      t.tec_nom_subest, 
+      t.tec_alimentador, 
+      t.tec_centro_trans, 
+      t.tec_fase, 
+      t.tec_acometida, 
+      t.tec_tipo_instala, 
+      t.tec_nom_calle, 
+      t.tec_nro_dir, 
+      t.tec_piso_dir, 
+      t.tec_depto_dir, 
+      t.tec_entre_calle1, 
+      t.tec_entre_calle2, 
+      t.tec_manzana, 
+      t.tec_barrio, 
+      t.tec_localidad, 
+      t.tec_partido, 
+      t.tec_sucursal, 
+      t.tec_cod_calle, 
+      t.tec_cod_entre, 
+      t.tec_cod_ycalle, 
+      t.tec_cod_suc, 
+      t.tec_cod_part, 
+      t.tec_cod_local 
+    FROM tecni t 
+    WHERE t.numero_cliente = nroClienteVjo;
+    
     RETURN 0, 'OK';
 
 END PROCEDURE;
