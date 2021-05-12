@@ -270,7 +270,7 @@ DEFINE auxMedInterno        char(1);
       FROM cliente_info_adic c 
       WHERE c.numero_cliente = nroClienteVjo;
 
-      EXECUTE PROCEDURE salt_graba_modif(nroClienteNvo, '511', 'SALESFORCE', 'INCORPORACION', auxMedInterno, '')
+      EXECUTE PROCEDURE sfc_graba_modif(nroClienteNvo, '511', 'SALESFORCE', 'SOL', 'A', 'INCORPORACION', auxMedInterno, '')
         INTO retCodigo, retDescripcion;
         
       IF retCodigo != 0 THEN
