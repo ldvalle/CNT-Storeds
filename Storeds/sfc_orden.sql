@@ -53,7 +53,8 @@ DEFINE error_info           CHAR(100);
       rol_usuario,
       tema,
       trabajo,
-      numero_cliente
+      numero_cliente, 
+      sfc_caso
     )VALUES (
       tipoOrden, 
       sNroOrden, 
@@ -68,7 +69,8 @@ DEFINE error_info           CHAR(100);
       sRolOrigen, 
       sTema, 
       sTrabajo, 
-      nro_cliente);	
+      nro_cliente,
+      999);	
     
     RETURN 0, 'OK';
 END PROCEDURE;
