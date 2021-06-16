@@ -29,6 +29,11 @@ DEFINE ss_ciiu          varchar(4, 0);
 DEFINE ss_cod_propiedad varchar(6, 0);
 DEFINE ss_tipo_sum      varchar(2, 0);
 DEFINE ss_pot_cont_hp   float;
+DEFINE ss_cod_provincia  char(3);
+DEFINE ss_cod_partido   char(3);
+DEFINE ss_cod_localidad char(3); 
+DEFINE ss_cod_calle     char(6);
+
 
 DEFINE sql_err              INTEGER;
 DEFINE isam_err             INTEGER;
@@ -77,10 +82,12 @@ DEFINE error_info           CHAR(100);
     
     -- Levantamos lo que tenemos de la solicitud
     SELECT s.nombre, s.tip_doc, s.nro_doc, s.origen_doc, s.tarifa, s.cod_postal, s.obs_dir,
-        s.tipo_iva, s.tipo_cliente, s.tipo_venc, s.nro_cuit, s.ciiu, s.cod_propiedad, s.tipo_sum, s.pot_cont_hp
+        s.tipo_iva, s.tipo_cliente, s.tipo_venc, s.nro_cuit, s.ciiu, s.cod_propiedad, s.tipo_sum, s.pot_cont_hp,
+        s.provincia, s.partido, s.localidad, s.cod_calle
     INTO
         ss_nombre, ss_tip_doc, ss_nro_doc, ss_origen_doc, ss_tarifa, ss_cod_postal, ss_obs_dir, ss_tipo_iva,
-        ss_tipo_cliente, ss_tipo_venc, ss_nro_cuit, ss_ciiu, ss_cod_propiedad, ss_tipo_sum, ss_pot_cont_hp
+        ss_tipo_cliente, ss_tipo_venc, ss_nro_cuit, ss_ciiu, ss_cod_propiedad, ss_tipo_sum, ss_pot_cont_hp,
+        ss_cod_provincia, ss_cod_partido, ss_cod_localidad, ss_cod_calle
     FROM solicitud s
     WHERE s.nro_solicitud = nroSolicitud;
 
@@ -145,7 +152,11 @@ DEFINE error_info           CHAR(100);
       recurso_propio = 'N', 
       corr_factint = 0,
       cuenta_conver = null,
-      tiene_caduc_manual = 'N'
+      tiene_caduc_manual = 'N',
+      provincia = ss_cod_provincia,
+      partido = ss_cod_partido,
+      comuna = ss_cod_localidad,
+      cod_calle = ss_cod_calle
     WHERE numero_cliente = nroClienteNvo;
 
     -- TECNi
@@ -221,12 +232,12 @@ DEFINE error_info           CHAR(100);
       t.tec_localidad, 
       t.tec_partido, 
       t.tec_sucursal, 
-      t.tec_cod_calle, 
+      ss_cod_calle, 
       t.tec_cod_entre, 
       t.tec_cod_ycalle, 
       t.tec_cod_suc, 
-      t.tec_cod_part, 
-      t.tec_cod_local 
+      ss_cod_partido, 
+      ss_cod_localidad 
     FROM tecni t 
     WHERE t.numero_cliente = nroClienteVjo;
     
