@@ -33,7 +33,7 @@ DEFINE ss_cod_provincia  char(3);
 DEFINE ss_cod_partido   char(3);
 DEFINE ss_cod_localidad char(3); 
 DEFINE ss_cod_calle     char(6);
-
+DEFINE ss_pod_id        integer;
 
 DEFINE sql_err              INTEGER;
 DEFINE isam_err             INTEGER;
@@ -83,11 +83,11 @@ DEFINE error_info           CHAR(100);
     -- Levantamos lo que tenemos de la solicitud
     SELECT s.nombre, s.tip_doc, s.nro_doc, s.origen_doc, s.tarifa, s.cod_postal, s.obs_dir,
         s.tipo_iva, s.tipo_cliente, s.tipo_venc, s.nro_cuit, s.ciiu, s.cod_propiedad, s.tipo_sum, s.pot_cont_hp,
-        s.provincia, s.partido, s.localidad, s.cod_calle
+        s.provincia, s.partido, s.localidad, s.cod_calle, s.pod_id
     INTO
         ss_nombre, ss_tip_doc, ss_nro_doc, ss_origen_doc, ss_tarifa, ss_cod_postal, ss_obs_dir, ss_tipo_iva,
         ss_tipo_cliente, ss_tipo_venc, ss_nro_cuit, ss_ciiu, ss_cod_propiedad, ss_tipo_sum, ss_pot_cont_hp,
-        ss_cod_provincia, ss_cod_partido, ss_cod_localidad, ss_cod_calle
+        ss_cod_provincia, ss_cod_partido, ss_cod_localidad, ss_cod_calle, ss_pod_id
     FROM solicitud s
     WHERE s.nro_solicitud = nroSolicitud;
 
@@ -198,7 +198,8 @@ DEFINE error_info           CHAR(100);
       tec_cod_ycalle, 
       tec_cod_suc, 
       tec_cod_part, 
-      tec_cod_local) 
+      tec_cod_local,
+      pod_id) 
     SELECT 
       nroClienteNvo,
       t.codigo_voltaje, 
@@ -237,7 +238,8 @@ DEFINE error_info           CHAR(100);
       t.tec_cod_ycalle, 
       t.tec_cod_suc, 
       ss_cod_partido, 
-      ss_cod_localidad 
+      ss_cod_localidad,
+      ss_pod_id 
     FROM tecni t 
     WHERE t.numero_cliente = nroClienteVjo;
     
