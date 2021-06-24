@@ -64,7 +64,7 @@ DEFINE error_info           CHAR(100);
       sRolOrigen, 
       CURRENT, 
       'RQ', 
-      'SALEFORCE', 
+      'SALESFORCE', 
       sAreaOrigen, 
       sRolOrigen, 
       sTema, 
