@@ -12,7 +12,7 @@ sRolSalida      like rol.rol,
 sAreaSalida     like rol.area,
 sucurPadre      char(4), 
 procedimiento   char(6))
-RETURNING smallint as codRetorno, char(50) as descripcion, char(12) as nro_ot;
+RETURNING smallint as codigo, char(50) as descripcion, char(12) as nro_ot;
 
 DEFINE retCodigo    smallint;
 DEFINE retDesc      char(50);
@@ -47,6 +47,8 @@ DEFINE cli_piso_dir             like sfc_clitecmed_data.piso_dir;
 DEFINE cli_depto_dir            like sfc_clitecmed_data.depto_dir;
 DEFINE cli_nom_comuna           like sfc_clitecmed_data.nom_comuna;
 DEFINE cli_cod_postal           like sfc_clitecmed_data.cod_postal;
+DEFINE cli_nva_clave_montri     like src_clitecmed_data.nva_clave_montri;
+
 DEFINE miTrabajo        char(4);
 DEFINE miFechaVto       date;
 DEFINE ObsSgn           char(100);
@@ -87,13 +89,11 @@ DEFINE error_info           CHAR(100);
     SELECT nombre, sucursal, sector, zona, correlativo_ruta, potencia_contrato, tipo_empalme,
         codigo_voltaje, acometida, tipo_conexion, clave_montri, numero_medidor, marca_medidor, 
         modelo_medidor, obs_dir, info_adic_lectura, tipo_cliente, acometida, nom_entre, nom_entre1,
-        telefono, nom_calle, nro_dir, nom_partido, piso_dir, depto_dir, nom_comuna, cod_postal
-        
+        telefono, nom_calle, nro_dir, nom_partido, piso_dir, depto_dir, nom_comuna, cod_postal, nva_clave_montri
     INTO cli_nombre, cli_sucursal, cli_sector, cli_zona, cli_correlativo_ruta, cli_potencia_contrato, cli_tipo_empalme,
         cli_codigo_voltaje, cli_acometida, cli_tipo_conexion, cli_clave_montri, cli_numero_medidor, cli_marca_medidor,
         cli_modelo_medidor, cli_obs_dir, cli_info_adic_lectura, cli_tipo_cliente, cli_acometida, cli_nom_entre, cli_nom_entre1,
-        cli_telefono, cli_nom_calle, cli_nro_dir, cli_nom_partido, cli_piso_dir, cli_depto_dir, cli_nom_comuna, cli_cod_postal
-        
+        cli_telefono, cli_nom_calle, cli_nro_dir, cli_nom_partido, cli_piso_dir, cli_depto_dir, cli_nom_comuna, cli_cod_postal, cli_nva_clave_montri
     FROM sfc_clitecmed_data
     WHERE trx_proced = idTrx;
     
@@ -104,7 +104,7 @@ DEFINE error_info           CHAR(100);
           LET miTrabajo = 'SR02';
       END IF;
     ELIF procedimiento = 'MANSER' THEN
-      IF cli_clave_montri = 'M' THEN
+      IF cli_nva_clave_montri = 'M' THEN
           LET miTrabajo = 'SC01';
       ELSE
           LET miTrabajo = 'SC02';

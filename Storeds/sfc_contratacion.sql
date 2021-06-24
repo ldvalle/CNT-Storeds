@@ -77,7 +77,8 @@ CREATE TABLE sfc_clitecmed_data (
   numero_medidor      integer, 
   marca_medidor       char(3),
   modelo_medidor      char(2),
-  clave_montri        char(1));
+  clave_montri        char(1),
+  nva_clave_montri    char(1));
 
 CREATE INDEX inx01clidata on sfc_clitecmed_data (trx_proced);
 

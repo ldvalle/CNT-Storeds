@@ -6,7 +6,7 @@ CREATE PROCEDURE sfc_retcli(
     msg_xnear       integer,
     sNroOrden       char(16)
 )
-RETURNING smallint as codRetorno, char(50) as descRetorno, char(12) as orden_ot;
+RETURNING smallint as codigo, char(50) as descripcion, char(12) as nro_ot;
 
 DEFINE retCodigo smallint;
 DEFINE retDesc   char(50);
@@ -102,7 +102,7 @@ DEFINE error_info           CHAR(100);
     
     -- Obtenemos Data Gral del cliente
     
-    EXECUTE PROCEDURE sfc_data_climed( nro_cliente, 'RETCLI')
+    EXECUTE PROCEDURE sfc_data_climed( nro_cliente, null, 'RETCLI')
         INTO retCodigo, retDesc, idTrx;
 
     IF retCodigo != 0 THEN

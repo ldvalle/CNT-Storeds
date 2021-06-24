@@ -1,6 +1,6 @@
 DROP PROCEDURE sfc_data_climed;
 
-CREATE PROCEDURE sfc_data_climed( nro_cliente like cliente.numero_cliente, procedimiento char(6))
+CREATE PROCEDURE sfc_data_climed( nro_cliente like cliente.numero_cliente, fase_nvo_medidor char(1),  procedimiento char(6))
 RETURNING smallint as codRetorno, char(50) as descripcion, char(30) as transaccion;
 DEFINE retCodigo smallint;
 DEFINE retDesc   char(50);
@@ -153,6 +153,10 @@ DEFINE error_info           CHAR(100);
     LET fmtCliente = lpad(nro_cliente, 10, '0');
     LET trxProced = procedimiento || fmtCliente || fmtDateTime;
     
+    IF trim(procedimiento) = 'RETCLI' THEN
+        LET fase_nvo_medidor = med_clave_montri;
+    END IF;
+    
     INSERT INTO sfc_clitecmed_data(
         trx_proced,
         numero_cliente,
@@ -189,7 +193,8 @@ DEFINE error_info           CHAR(100);
         numero_medidor, 
         marca_medidor,
         modelo_medidor,
-        clave_montri
+        clave_montri,
+        nva_clave_montri
     )VALUES(
         trxProced,
         nro_cliente,
@@ -226,7 +231,8 @@ DEFINE error_info           CHAR(100);
         med_numero_medidor, 
         med_marca_medidor, 
         med_modelo_medidor,
-        med_clave_montri
+        med_clave_montri,
+        fase_nvo_medidor
     );
 
     RETURN 0, 'OK', trxProced;

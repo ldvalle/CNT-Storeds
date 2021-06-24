@@ -3,6 +3,7 @@ DROP PROCEDURE sfc_manser;
 CREATE PROCEDURE sfc_manser(
     cod_motivo      like tabla.codigo,
     nro_cliente     like cliente.numero_cliente,
+    nvaClaveMontri  char(1),
     msg_xnear       integer,
     sNroOrden       char(16)
 )
@@ -95,7 +96,7 @@ DEFINE error_info           CHAR(100);
 	END IF;
     
     -- Obtenemos Data Gral del cliente
-    EXECUTE PROCEDURE sfc_data_climed( nro_cliente, 'MANSER')
+    EXECUTE PROCEDURE sfc_data_climed( nro_cliente, nvaClaveMontri, 'MANSER')
         INTO retCodigo, retDesc, idTrx;
 
     IF retCodigo != 0 THEN
