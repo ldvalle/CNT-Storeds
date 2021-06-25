@@ -5,9 +5,10 @@ CREATE PROCEDURE sfc_manser(
     nro_cliente     like cliente.numero_cliente,
     nvaClaveMontri  char(1),
     msg_xnear       integer,
-    sNroOrden       char(16)
+    sNroOrden       char(16),
+    observaciones   char(10240)
 )
-RETURNING smallint as codRetorno, char(50) as descRetorno, char(12) as orden_ot;
+RETURNING smallint as codRetorno, char(50) as descRetorno, char(12) as nro_ot;
 
 DEFINE retCodigo smallint;
 DEFINE retDesc   char(50);
@@ -123,7 +124,7 @@ DEFINE error_info           CHAR(100);
     END IF;
     
     -- Cargar y enviar Mensaje
-    EXECUTE PROCEDURE sfc_envia_mensaje(nro_cliente, msg_xnear, cod_motivo, auxDesc, enviaSAP, idTrx, sRolOrigen, sAreaOrigen, sCarpetaSalida, sAreaSalida, sucurPadreSAP, 'MANSER')
+    EXECUTE PROCEDURE sfc_envia_mensaje(nro_cliente, msg_xnear, cod_motivo, auxDesc, enviaSAP, idTrx, sRolOrigen, sAreaOrigen, sCarpetaSalida, sAreaSalida, sucurPadreSAP, 'MANSER', observaciones)
         INTO retCodigo, retDesc;
 
     IF retCodigo != 0 THEN

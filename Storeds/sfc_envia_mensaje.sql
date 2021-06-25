@@ -12,7 +12,8 @@ sAreaOrigen     like rol.area,
 sRolSalida      like rol.rol,
 sAreaSalida     like rol.area,
 sucurPadre      char(4), 
-procedimiento   char(6))
+procedimiento   char(6),
+observaciones   char(10240))
 RETURNING smallint as codRetorno, char(50) as descripcion;
 
 DEFINE retCodigo    smallint;
@@ -58,7 +59,10 @@ DEFINE sC                   char(1);
     SELECT caracter INTO sC FROM tabla_ascii
     WHERE cod_dec = 254;
 
-     
+    IF observaciones is null THEN
+        LET observaciones = ' ';
+    END IF;
+    
     -- Armo TEXTON
     IF trim(procedimiento) = 'RETCLI' THEN
       LET texton = trim(sRolSalida) || sC || sC ||
@@ -75,7 +79,8 @@ DEFINE sC                   char(1);
        to_char(round(cli_potencia_contrato,2)) || sC ||
        to_char(cli_potencia_inst_fp) || sC || sC || sC ||
        trim(cli_nom_provincia) || sC || sC || sC || sC || sC || '-------------\n' ||
-       to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || trim(sRolOrigen) || ' - ' || '10.240.20.18/\n';
+       to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || trim(sRolOrigen) || ' - ' || '10.240.20.18' ||
+       ' - ' || observaciones  || '/\n';
   
     ELIF procedimiento = 'MANSER' THEN
       LET texton = trim(sRolSalida) || sC || sC || sC || sC ||
@@ -91,7 +96,8 @@ DEFINE sC                   char(1);
         to_char(round(cli_potencia_contrato,2)) || sC ||
         to_char(cli_potencia_inst_fp) || sC || sC || sC ||
         trim(cli_nom_provincia) || sC || sC || sC || sC || sC || '-------------\n' ||
-        to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || trim(sRolOrigen) || ' - ' || '10.240.20.18/\n';
+        to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || trim(sRolOrigen) || ' - ' || '10.240.20.18' ||
+        ' - ' || observaciones  || '/\n';
     
     END IF;
         

@@ -4,7 +4,8 @@ CREATE PROCEDURE sfc_retcli(
     cod_motivo      like tabla.codigo,
     nro_cliente     like cliente.numero_cliente,
     msg_xnear       integer,
-    sNroOrden       char(16)
+    sNroOrden       char(16),
+    observaciones   char(10240)
 )
 RETURNING smallint as codigo, char(50) as descripcion, char(12) as nro_ot;
 
@@ -133,7 +134,7 @@ DEFINE error_info           CHAR(100);
     
     -- Cargar y enviar Mensaje
     
-    EXECUTE PROCEDURE sfc_envia_mensaje(nro_cliente, msg_xnear, cod_motivo, auxDesc, enviaSAP, idTrx, sRolOrigen, sAreaOrigen, sCarpetaSalida, sAreaSalida, sucurPadreSAP, 'RETCLI')
+    EXECUTE PROCEDURE sfc_envia_mensaje(nro_cliente, msg_xnear, cod_motivo, auxDesc, enviaSAP, idTrx, sRolOrigen, sAreaOrigen, sCarpetaSalida, sAreaSalida, sucurPadreSAP, 'RETCLI', observaciones)
         INTO retCodigo, retDesc;
 
     IF retCodigo != 0 THEN
