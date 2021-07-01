@@ -1,11 +1,12 @@
 DROP PROCEDURE sfc_cambio_cond_contra;
 
 CREATE PROCEDURE sfc_cambio_cond_contra(
-nroCliente      LIKE cliente.numero_cliente, 
-sValorTension    LIKE tecni.codigo_voltaje,
-sTipoCliente     LIKE cliente.tipo_cliente,
-sTarifa          LIKE cliente.tarifa,
-sPotencia        LIKE cliente.potencia_cont_hp
+nroCliente      LIKE cliente.numero_cliente,
+sValorTension   LIKE tecni.codigo_voltaje,
+sTipoCliente    LIKE cliente.tipo_cliente,
+sTarifa         LIKE cliente.tarifa,
+sPotencia       LIKE cliente.potencia_cont_hp,
+sActEco         LIKE cliente.actividad_economic
 )
 RETURNING smallint as codigo, char(100) as descripcion;
 
@@ -13,6 +14,7 @@ DEFINE miValorTension   like tecni.codigo_voltaje;
 DEFINE miTipoCliente    like cliente.tipo_cliente;
 DEFINE miTarifa         like cliente.tarifa;
 DEFINE miPotencia       like cliente.potencia_inst_hp;
+DEFINE miActeco         like cliente.actividad_economic;
 DEFINE nrows            integer;
 DEFINE sCodigoMod       like modif.codigo_modif;
 DEFINE sValAnterior     char(55);
@@ -33,8 +35,8 @@ DEFINE error_info           CHAR(100);
 
     SET LOCK MODE TO WAIT 10;
     
-    SELECT c.tipo_cliente, c.tarifa, c.potencia_cont_hp, t.codigo_voltaje
-    INTO miTipoCliente, miTarifa, miPotencia, miValorTension
+    SELECT c.tipo_cliente, c.tarifa, c.potencia_cont_hp, t.codigo_voltaje, c.actividad_economic
+    INTO miTipoCliente, miTarifa, miPotencia, miValorTension, miActeco
     FROM cliente c, OUTER tecni t
     WHERE c.numero_cliente = nroCliente
     AND t.numero_cliente = c.numero_cliente;
@@ -78,6 +80,15 @@ DEFINE error_info           CHAR(100);
 
         UPDATE cliente SET
         tarifa = trim(sTarifa)
+        WHERE numero_cliente = nroCliente;
+
+    ELIF trim(sActEco) != trim(miActeco) THEN
+        LET sCodigoMod = '18';
+        LET sValAnterior = trim(miActeco);
+        LET sValNuevo = trim(sActEco);
+
+        UPDATE cliente SET
+        actividad_economic = trim(sActeco)
         WHERE numero_cliente = nroCliente;
         
     ELSE
