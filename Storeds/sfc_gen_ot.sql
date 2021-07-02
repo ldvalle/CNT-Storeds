@@ -248,16 +248,16 @@ DEFINE error_info           CHAR(100);
          WHERE e.numero_cliente = e2.numero_cliente
          AND e.estado_actual = e2.estado_actual );
 
+    IF procedimiento = 'RETCLI' THEN
+      LET sNroOt = 'SR' || lpad( iNroOT, 10, '0'); 
+      LET omsObsError = 'Retcli sin OT';
+    ELIF procedimiento = 'MANSER' THEN
+      LET sNroOt = 'SC' || lpad( iNroOT, 10, '0'); 
+      LET omsObsError = 'Manser sin OT';
+    END IF;
     
     IF envia_sap = 'S' THEN
         -- Grabo OT_MAC_SAP
-        IF procedimiento = 'RETCLI' THEN
-          LET sNroOt = 'SR' || lpad( iNroOT, 10, '0'); 
-          LET omsObsError = 'Retcli sin OT';
-        ELIF procedimiento = 'MANSER' THEN
-          LET sNroOt = 'SC' || lpad( iNroOT, 10, '0'); 
-          LET omsObsError = 'Manser sin OT';
-        END IF;
 
         LET ObsSgn = trim(sRolSalida) || ' - '  || to_char(nro_cliente) || ' - ' || trim(cli_nombre) || current || ' - ' || trim(sRolOrigen) || ' - 10.240.0.0';    
         
