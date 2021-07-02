@@ -47,7 +47,7 @@ DEFINE cli_piso_dir             like sfc_clitecmed_data.piso_dir;
 DEFINE cli_depto_dir            like sfc_clitecmed_data.depto_dir;
 DEFINE cli_nom_comuna           like sfc_clitecmed_data.nom_comuna;
 DEFINE cli_cod_postal           like sfc_clitecmed_data.cod_postal;
-DEFINE cli_nva_clave_montri     like src_clitecmed_data.nva_clave_montri;
+DEFINE cli_nva_clave_montri     like sfc_clitecmed_data.nva_clave_montri;
 
 DEFINE miTrabajo        char(4);
 DEFINE miFechaVto       date;
