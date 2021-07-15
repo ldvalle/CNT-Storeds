@@ -94,8 +94,8 @@ DEFINE error_info           CHAR(100);
     ELSE
         RETURN 0, 'Sin Cambios'; 
     END IF;
-    
-	EXECUTE PROCEDURE salt_graba_modif(nroCliente, sCodigoMod, 'SALESFORCE', 'CNT-CCC', sValAnterior, sValNuevo)
+
+    EXECUTE PROCEDURE sfc_graba_modif(nroCliente, sCodigoMod, 'SALESFORCE', 'MOD', 'A', 'CNT-CCC', sValAnterior, sValNuevo) 
 		INTO codRetorno, descRetorno;
     
     IF codRetorno != 0 THEN
