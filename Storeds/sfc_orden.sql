@@ -27,17 +27,19 @@ DEFINE error_info           CHAR(100);
         RETURN 1, 'sfc_orden. sqlErr '  || to_char(sql_err) || ' isamErr ' || to_char(isam_err) || ' ' || error_info;
     END EXCEPTION;
     
+    SELECT sucursal INTO centro_op FROM sfc_clitecmed_data WHERE trx_proced = idTrx;
+    
     IF procedimiento = 'RETCLI' THEN
         LET tipoOrden = 'RET';
         LET sTema = motivo;
         LET sTrabajo = ' ';
+        LET centro_op = sAreaOrigen;
     ELIF procedimiento = 'MANSER' THEN
         LET tipoOrden = 'MAN';
         LET sTema = substr(motivo, 1, 3);
         LET sTrabajo = substr(motivo, 4, 3);
+        LET centro_op = sAreaOrigen;
     END IF;
-       
-    SELECT sucursal INTO centro_op FROM sfc_clitecmed_data WHERE trx_proced = idTrx;
     
     INSERT INTO orden (
       tipo_orden,
