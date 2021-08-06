@@ -377,7 +377,7 @@ DEFINE error_info           CHAR(100);
         omp_status,
         omp_hora_status,
         omp_fecha_status,
-        omp_envia_sap 
+        omp_envia_sap
       ) VALUES (
         'N001', 
         sNroOt,
@@ -408,6 +408,15 @@ DEFINE error_info           CHAR(100);
         'N' ); 
     END IF;
 
+    IF procedimiento = 'RETCLI' THEN
+        IF TRIM(motivo) = 'S23' THEN
+          UPDATE ot_mac_pend SET
+              omp_baja_sin_med = 'S'
+          WHERE omp_tipo_ifaz = 'N001'
+          AND omp_nro_orden = sNroOt;
+        END IF; 
+    END IF;
+    
     RETURN 0, 'OK', sNroOt;
 END PROCEDURE;
 

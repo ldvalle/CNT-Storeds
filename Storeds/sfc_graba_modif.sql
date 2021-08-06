@@ -5,7 +5,7 @@ rol_modif			LIKE modif.ficha,
 tipo_orden          LIKE modif.tipo_orden,
 estado_cliente      char(1),
 procedimiento		LIKE modif.proced,
-nombre_anterior	LIKE modif.dato_anterior,
+nombre_anterior	    LIKE modif.dato_anterior,
 nombre_nuevo		LIKE modif.dato_nuevo)
 RETURNING integer, char(100);
 

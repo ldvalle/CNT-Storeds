@@ -7,7 +7,7 @@ CREATE PROCEDURE sfc_retcli(
     sNroOrden       char(16),
     observaciones   char(10240)
 )
-RETURNING smallint as codigo, char(50) as descripcion, char(12) as nro_ot;
+RETURNING smallint as codigo, char(50) as descripcion, char(12) as numero_ot;
 
 DEFINE retCodigo smallint;
 DEFINE retDesc   char(50);

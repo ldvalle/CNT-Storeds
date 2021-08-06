@@ -11,7 +11,7 @@ DEFINE trxProced    char(30); -- proced + fmtCliente + fmtDateTime
 -- Data Cliente
 DEFINE cli_dv_numero_cliente char(1);
 DEFINE cli_sucursal like cliente.sucursal;
-DEFINE cli_nombre like cliente.sucursal;
+DEFINE cli_nombre like cliente.nombre;
 DEFINE cli_nom_calle like cliente.nom_calle;
 DEFINE cli_nro_dir like cliente.nro_dir;
 DEFINE cli_piso_dir like cliente.piso_dir;

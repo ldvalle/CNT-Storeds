@@ -8,7 +8,7 @@ CREATE PROCEDURE sfc_manser(
     sNroOrden       char(16),
     observaciones   char(10240)
 )
-RETURNING smallint as codRetorno, char(50) as descRetorno, char(12) as nro_ot;
+RETURNING smallint as codRetorno, char(50) as descRetorno, char(12) as numero_ot;
 
 DEFINE retCodigo smallint;
 DEFINE retDesc   char(50);
