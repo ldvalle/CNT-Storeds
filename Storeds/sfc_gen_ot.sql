@@ -11,7 +11,8 @@ sAreaOrigen     like rol.area,
 sRolSalida      like rol.rol,
 sAreaSalida     like rol.area,
 sucurPadre      char(4), 
-procedimiento   char(6))
+procedimiento   char(6),
+observaciones   char(10240))
 RETURNING smallint as codigo, char(50) as descripcion, char(12) as nro_ot;
 
 DEFINE retCodigo    smallint;
@@ -79,9 +80,11 @@ DEFINE sql_err              INTEGER;
 DEFINE isam_err             INTEGER;
 DEFINE error_info           CHAR(100);
 
+    {    
     ON EXCEPTION SET sql_err, isam_err, error_info
         RETURN 1, 'sfc_gen_ot. sqlErr '  || to_char(sql_err) || ' isamErr ' || to_char(isam_err) || ' ' || error_info, null;
     END EXCEPTION;
+    }
 
     LET sNroOt='000000000000';
 
@@ -303,7 +306,8 @@ DEFINE error_info           CHAR(100);
           oms_rol_creador,
           oms_nombre_rol,
           oms_proced,
-          oms_nro_proced 
+          oms_nro_proced,
+          oms_obs_segen
         )VALUES(
           'G001',
           sNroOt,
@@ -346,7 +350,9 @@ DEFINE error_info           CHAR(100);
           sRolOrigen,
           sRolOrigen,
           procedimiento,
-          msg_xnear ); 
+          msg_xnear,
+          observaciones
+          ); 
         
     ELSE
         -- Grabo OT_MAC_PEND
@@ -377,7 +383,8 @@ DEFINE error_info           CHAR(100);
         omp_status,
         omp_hora_status,
         omp_fecha_status,
-        omp_envia_sap
+        omp_envia_sap,
+        omp_observac
       ) VALUES (
         'N001', 
         sNroOt,
@@ -405,7 +412,8 @@ DEFINE error_info           CHAR(100);
         'INIC',
         CURRENT,
         CURRENT,
-        'N' ); 
+        'N',
+        observaciones); 
     END IF;
 
     IF procedimiento = 'RETCLI' THEN

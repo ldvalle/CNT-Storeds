@@ -80,7 +80,7 @@ DEFINE sC                   char(1);
        to_char(cli_potencia_inst_fp) || sC || sC || sC ||
        trim(cli_nom_provincia) || sC || sC || sC || sC || sC || '-------------\n' || 
        to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || trim(sRolOrigen) || ' - ' || '10.240.20.18' || sC || sC ||
-       ' - ' || observaciones  || '/\n';
+       ' - ' || observaciones  || sC  || '/\n';
   
     ELIF procedimiento = 'MANSER' THEN
       LET texton = trim(sRolSalida) || sC || sC || sC || sC ||
@@ -97,7 +97,7 @@ DEFINE sC                   char(1);
         to_char(cli_potencia_inst_fp) || sC || sC || sC ||
         trim(cli_nom_provincia) || sC || sC || sC || sC || sC || '-------------\n' || 
         to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || trim(sRolOrigen) || ' - ' || '10.240.20.18' || sC || sC ||
-        ' - ' || observaciones  || '/\n';
+        ' - ' || observaciones || sC  || '/\n';
     
     END IF;
         

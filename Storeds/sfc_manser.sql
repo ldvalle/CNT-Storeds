@@ -31,9 +31,11 @@ DEFINE sql_err              INTEGER;
 DEFINE isam_err             INTEGER;
 DEFINE error_info           CHAR(100);
 
+{
     ON EXCEPTION SET sql_err, isam_err, error_info
         RETURN 1, 'sfc_manser. sqlErr '  || to_char(sql_err) || ' isamErr ' || to_char(isam_err) || ' ' || error_info, null;
     END EXCEPTION;
+}
 
     SET LOCK MODE TO WAIT 10;
     
@@ -116,7 +118,7 @@ DEFINE error_info           CHAR(100);
     END IF;
 
     -- Cargar Tablas de OT
-    EXECUTE PROCEDURE sfc_gen_ot(nro_cliente, msg_xnear, cod_motivo, enviaSAP, idTrx, sRolOrigen, sAreaOrigen, sCarpetaSalida, sAreaSalida, sucurPadreSAP, 'MANSER')
+    EXECUTE PROCEDURE sfc_gen_ot(nro_cliente, msg_xnear, cod_motivo, enviaSAP, idTrx, sRolOrigen, sAreaOrigen, sCarpetaSalida, sAreaSalida, sucurPadreSAP, 'MANSER', observaciones)
         INTO retCodigo, retDesc, ordenOt;
         
     IF retCodigo != 0 THEN
