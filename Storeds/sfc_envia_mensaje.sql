@@ -78,9 +78,13 @@ DEFINE sC                   char(1);
        trim(cli_nro_subestacion) || sC ||
        to_char(round(cli_potencia_contrato,2)) || sC ||
        to_char(cli_potencia_inst_fp) || sC || sC || sC ||
-       trim(cli_nom_provincia) || sC || sC || sC || sC || sC || '-------------\n' || 
-       to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || trim(sRolOrigen) || ' - ' || '10.240.20.18' || sC || sC ||
-       ' - ' || observaciones  || sC  || '/\n';
+       trim(cli_nom_provincia) || sC || sC || sC || sC || sC ||  sC ||
+       to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || trim(sRolOrigen) || ' - ' || '10.240.20.18' ||
+       ' /\n ' || observaciones  || 
+       sC || sC || sC || sC || sC || sC || sC || sC || sC || sC ||
+       sC || sC || sC || sC || sC || sC || sC || sC || sC || sC ||
+       sC || sC || sC || sC || sC || sC || sC || sC || sC || sC ||
+       sC || sC || sC || sC || sC;
   
     ELIF procedimiento = 'MANSER' THEN
       LET texton = trim(sRolSalida) || sC || sC || sC || sC ||
@@ -95,9 +99,13 @@ DEFINE sC                   char(1);
         trim(cli_nro_subestacion) || sC ||
         to_char(round(cli_potencia_contrato,2)) || sC ||
         to_char(cli_potencia_inst_fp) || sC || sC || sC ||
-        trim(cli_nom_provincia) || sC || sC || sC || sC || sC || '-------------\n' || 
-        to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || trim(sRolOrigen) || ' - ' || '10.240.20.18' || sC || sC ||
-        ' - ' || observaciones || sC  || '/\n';
+        trim(cli_nom_provincia) || sC || sC || sC || sC || sC ||  sC || 
+        to_char(current, '%d/%m/%Y %H:%M:%S') || ' - ' || trim(sRolOrigen) || ' - ' || '10.240.20.18' ||
+        ' /\n ' || observaciones  ||
+        sC || sC || sC || sC || sC || sC || sC || sC || sC || sC ||
+        sC || sC || sC || sC || sC || sC || sC || sC || sC || sC ||
+        sC || sC || sC || sC || sC || sC || sC || sC || sC || sC ||
+        sC || sC || sC || sC || sC;
     
     END IF;
         
